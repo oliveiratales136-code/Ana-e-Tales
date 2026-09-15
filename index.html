@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nós dois</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<!-- ================================================================
+     PAINEL DE PERSONALIZAÇÃO — edite só esta parte para o site ficar
+     do jeito de vocês. Não precisa mexer em mais nada abaixo disso.
+     ================================================================ -->
+<script>
+  const CONFIG = {
+    nomeA: "Ana Julia",
+    nomeB: "Tales",
+
+    // Data em que começaram a namorar (ano, mês, dia). Mês começa em 0 = Janeiro.
+    dataInicio: new Date(2024, 0, 8), // 08/01/2024
+
+    fraseTopo: "",
+
+    cartaTitulo: "Para você",
+    cartaTexto: `Desde o dia em que nos encontramos, minha vida ganhou mais cor.
+Cada detalhe seu virou parte da minha rotina, e cada dia ao seu lado
+é um novo motivo pra sorrir. Essa página é um pedacinho da nossa
+história — pra guardarmos, revivermos e continuarmos escrevendo juntos.
+
+Te amo.`,
+    cartaAssinatura: "Com todo o meu amor.",
+
+    // Linha do tempo: adicione, remova ou edite quantos momentos quiser.
+    momentos: [
+      { data: "11 de agosto de 2023", titulo: "Como tudo começou", texto: "O dia em que nos conhecemos e tudo mudou." },
+      { data: "edite esta data", titulo: "Primeiro encontro", texto: "Na Casa Gourmet — aquele nervosismo bom, e a certeza de que valeria a pena." },
+      { data: "08 de janeiro de 2024", titulo: "Ficou oficial", texto: "O dia em que decidimos escrever essa história juntos." },
+      { data: "Hoje", titulo: "E continuamos...", texto: "Cada dia é um novo capítulo dessa história." },
+    ],
+
+    // Músicas de fundo — tocam em ciclo, uma vez cada, e depois recomeça.
+    // Coloque os arquivos .mp3 na mesma pasta deste HTML, com esses nomes exatos
+    // (ou troque o "arquivo" abaixo pelo nome que você usar).
+    musicas: [
+      { arquivo: "velha-infancia.mp3", titulo: "Velha Infância", artista: "Tribalistas" },
+      { arquivo: "linha-do-tempo.mp3", titulo: "Linha do Tempo", artista: "Victor & Leo" },
+    ],
+  };
+</script>
+
+<style>
+  :root{
+    --rosa: #E8B4BC;
+    --rosa-escuro: #C97B8B;
+    --vinho: #7A2E3B;
+    --creme: #FFF8F5;
+    --dourado: #C9A24B;
+    --texto: #4A3238;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:var(--creme);
+    color:var(--texto);
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.serif{ font-family:'Playfair Display', serif; }
+  .script{ font-family:'Cormorant Garamond', serif; }
+
+  /* ---------- Pétalas caindo ---------- */
+  #petals{ position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
+  .petal{
+    position:absolute; top:-5%;
+    font-size:1.2rem; color:var(--rosa-escuro); opacity:.55;
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(360deg); }
+  }
+
+  section, footer, .hero{ position:relative; z-index:2; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh; position:relative; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:24px;
+    background: radial-gradient(circle at 50% 20%, #fff 0%, var(--creme) 55%, #f6e3e6 100%);
+  }
+  .hero-frame{
+    width:220px; height:220px; border-radius:50%; overflow:hidden;
+    border:4px solid #fff; box-shadow:0 10px 40px -10px rgba(122,46,59,.35);
+    background:linear-gradient(135deg, var(--rosa), var(--rosa-escuro));
+    display:flex; align-items:center; justify-content:center; margin-bottom:28px;
+  }
+  .hero-frame img{ width:100%; height:100%; object-fit:cover; }
+  .hero-frame .placeholder{ color:#fff; text-align:center; padding:16px; font-size:.8rem; line-height:1.4; }
+
+  .names{ font-size:clamp(2rem, 6vw, 3.4rem); color:var(--vinho); }
+  .names .amp{ color:var(--dourado); font-style:italic; margin:0 .3em; }
+
+  .counter-box{
+    margin-top:28px; display:flex; gap:18px; flex-wrap:wrap; justify-content:center;
+  }
+  .counter-item{
+    background:#fff; border-radius:16px; padding:14px 20px; min-width:82px;
+    box-shadow:0 6px 20px -8px rgba(122,46,59,.25);
+  }
+  .counter-num{ font-size:1.8rem; font-weight:600; color:var(--rosa-escuro); font-family:'Playfair Display',serif; }
+  .counter-label{ font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--texto); opacity:.7; }
+
+  .scroll-hint{ position:absolute; bottom:28px; font-size:.8rem; opacity:.6; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .scroll-hint i{ animation: bounce 1.8s ease-in-out infinite; }
+  @keyframes bounce{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- Seções gerais ---------- */
+  section{ padding:80px 20px; max-width:900px; margin:0 auto; }
+  .section-title{ text-align:center; font-size:clamp(1.6rem,4vw,2.4rem); color:var(--vinho); margin-bottom:8px; }
+  .section-sub{ text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.15rem; color:var(--rosa-escuro); margin-bottom:48px; }
+
+  /* ---------- Carta ---------- */
+  .carta{
+    background:#fff; border-radius:20px; padding:44px 36px; box-shadow:0 12px 40px -12px rgba(122,46,59,.2);
+    position:relative;
+  }
+  .carta i.ph-quotes{ font-size:2rem; color:var(--rosa); }
+  .carta-texto{ font-family:'Cormorant Garamond',serif; font-size:1.3rem; line-height:1.75; white-space:pre-line; margin:16px 0 24px; }
+  .carta-assinatura{ text-align:right; font-family:'Playfair Display',serif; font-style:italic; color:var(--vinho); }
+
+  /* ---------- Galeria ---------- */
+  .galeria{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:640px){ .galeria{ grid-template-columns:repeat(2,1fr); } }
+  .foto-slot{
+    aspect-ratio:1; border-radius:14px; overflow:hidden; background:linear-gradient(135deg,#f3d9dd,#e9c1c8);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .foto-slot img{ width:100%; height:100%; object-fit:cover; }
+  .foto-slot .placeholder{ text-align:center; color:var(--vinho); font-size:.7rem; padding:10px; opacity:.75; }
+  .foto-slot .placeholder i{ font-size:1.6rem; display:block; margin-bottom:4px; }
+
+  /* ---------- Linha do tempo ---------- */
+  .timeline{ position:relative; padding-left:28px; }
+  .timeline::before{
+    content:""; position:absolute; left:6px; top:6px; bottom:6px; width:2px;
+    background:linear-gradient(var(--rosa), var(--dourado));
+  }
+  .tl-item{ position:relative; margin-bottom:36px; opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .tl-item.visible{ opacity:1; transform:translateY(0); }
+  .tl-item::before{
+    content:""; position:absolute; left:-28px; top:4px; width:14px; height:14px; border-radius:50%;
+    background:var(--rosa-escuro); border:3px solid #fff; box-shadow:0 0 0 2px var(--rosa);
+  }
+  .tl-data{ font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; color:var(--rosa-escuro); font-weight:600; }
+  .tl-titulo{ font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--vinho); margin:4px 0 6px; }
+  .tl-texto{ font-size:.95rem; opacity:.85; }
+
+  /* ---------- Player de música ---------- */
+  #music-player{
+    position:fixed; bottom:22px; right:22px; z-index:20;
+    background:#fff; border-radius:999px; box-shadow:0 8px 28px -8px rgba(122,46,59,.35);
+    display:flex; align-items:center; gap:10px; padding:10px 16px 10px 10px;
+    max-width:260px; transition:transform .3s ease;
+  }
+  #music-toggle{
+    width:40px; height:40px; border-radius:50%; border:none; cursor:pointer;
+    background:var(--rosa-escuro); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem; flex-shrink:0;
+  }
+  #music-info{ overflow:hidden; }
+  #music-info .titulo{ font-size:.78rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #music-info .artista{ font-size:.68rem; opacity:.65; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .disc-spin{ animation: spin 3s linear infinite; }
+  .disc-spin.paused{ animation-play-state: paused; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  footer{ text-align:center; padding:40px 20px 60px; font-size:.8rem; opacity:.6; }
+  footer i{ color:var(--rosa-escuro); }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-frame">
+    <img src="hero.jpg" alt="Ana Julia e Tales">
+  </div>
+
+  <h1 class="names"><span id="nome-a"></span><span class="amp">&</span><span id="nome-b"></span></h1>
+  <p class="script" style="font-size:1.3rem; color:var(--rosa-escuro); margin-top:4px;" id="frase-topo"></p>
+
+  <div class="counter-box" id="counter-box"></div>
+
+  <div class="scroll-hint">
+    role para ver nossa história <i class="ph ph-caret-down"></i>
+  </div>
+</section>
+
+<!-- ===== CARTA ===== -->
+<section>
+  <h2 class="section-title" id="carta-titulo"></h2>
+  <p class="section-sub">algumas palavras direto do coração</p>
+  <div class="carta">
+    <i class="ph-fill ph-quotes"></i>
+    <p class="carta-texto" id="carta-texto"></p>
+    <p class="carta-assinatura" id="carta-assinatura"></p>
+  </div>
+</section>
+
+<!-- ===== GALERIA ===== -->
+<section>
+  <h2 class="section-title">Nossos momentos</h2>
+  <p class="section-sub">alguns instantes que guardamos com carinho</p>
+  <div class="galeria" id="galeria">
+    <!-- TROQUE AQUI: em cada .foto-slot, substitua o <div class="placeholder"> por <img src="foto1.jpg"> -->
+  </div>
+</section>
+
+<!-- ===== LINHA DO TEMPO ===== -->
+<section>
+  <h2 class="section-title">Nossa história</h2>
+  <p class="section-sub">do começo até aqui</p>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+<footer>
+  feito com <i class="ph-fill ph-heart"></i> para uma história que continua
+</footer>
+
+<!-- ===== PLAYER DE MÚSICA ===== -->
+<div id="music-player" class="hidden">
+  <button id="music-toggle"><i class="ph-fill ph-play" id="music-icon"></i></button>
+  <div id="music-info">
+    <div class="titulo" id="music-titulo">—</div>
+    <div class="artista" id="music-artista">—</div>
+  </div>
+</div>
+<audio id="audio-el"></audio>
+
+<script>
+  // ---- Preenche textos a partir do CONFIG ----
+  document.getElementById('nome-a').textContent = CONFIG.nomeA;
+  document.getElementById('nome-b').textContent = CONFIG.nomeB;
+  document.getElementById('carta-titulo').textContent = CONFIG.cartaTitulo;
+  document.getElementById('carta-texto').textContent = CONFIG.cartaTexto;
+  document.getElementById('carta-assinatura').textContent = CONFIG.cartaAssinatura;
+  if(CONFIG.fraseTopo){
+    document.getElementById('frase-topo').textContent = CONFIG.fraseTopo;
+  } else {
+    document.getElementById('frase-topo').style.display = 'none';
+  }
+
+  // ---- Contador de tempo juntos ----
+  function atualizarContador(){
+    const agora = new Date();
+    let diffMs = agora - CONFIG.dataInicio;
+    if(diffMs < 0) diffMs = 0;
+
+    const totalDias = Math.floor(diffMs / 86400000);
+    const anos = Math.floor(totalDias / 365);
+    const meses = Math.floor((totalDias % 365) / 30);
+    const dias = totalDias - (anos*365) - (meses*30);
+
+    const box = document.getElementById('counter-box');
+    box.innerHTML = `
+      <div class="counter-item"><div class="counter-num">${anos}</div><div class="counter-label">Anos</div></div>
+      <div class="counter-item"><div class="counter-num">${meses}</div><div class="counter-label">Meses</div></div>
+      <div class="counter-item"><div class="counter-num">${dias}</div><div class="counter-label">Dias</div></div>
+    `;
+  }
+  atualizarContador();
+  setInterval(atualizarContador, 1000 * 60 * 30); // atualiza a cada 30min, suficiente pro contador de dias
+
+  // ---- Galeria: fotos de vocês ----
+  const galeria = document.getElementById('galeria');
+  const totalFotos = 5;
+  for(let i=1; i<=totalFotos; i++){
+    const slot = document.createElement('div');
+    slot.className = 'foto-slot';
+    slot.innerHTML = `<img src="foto${i}.jpg" alt="Ana Julia e Tales">`;
+    galeria.appendChild(slot);
+  }
+
+  // ---- Linha do tempo ----
+  const timeline = document.getElementById('timeline');
+  CONFIG.momentos.forEach(m=>{
+    const item = document.createElement('div');
+    item.className = 'tl-item';
+    item.innerHTML = `
+      <div class="tl-data">${m.data}</div>
+      <div class="tl-titulo">${m.titulo}</div>
+      <div class="tl-texto">${m.texto}</div>
+    `;
+    timeline.appendChild(item);
+  });
+
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.tl-item').forEach(el=>observer.observe(el));
+
+  // ---- Pétalas caindo ----
+  const petalsContainer = document.getElementById('petals');
+  const petalChars = ['❀','❁','✿','♡'];
+  for(let i=0; i<18; i++){
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = petalChars[Math.floor(Math.random()*petalChars.length)];
+    p.style.left = Math.random()*100 + '%';
+    p.style.animationDuration = (8 + Math.random()*10) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    p.style.fontSize = (0.8 + Math.random()*1.2) + 'rem';
+    petalsContainer.appendChild(p);
+  }
+
+  // ---- Músicas de fundo (tocam em ciclo, uma vez cada, repetindo) ----
+  if(CONFIG.musicas && CONFIG.musicas.length > 0){
+    const player = document.getElementById('music-player');
+    const audio = document.getElementById('audio-el');
+    const toggleBtn = document.getElementById('music-toggle');
+    const icon = document.getElementById('music-icon');
+    const tituloEl = document.getElementById('music-titulo');
+    const artistaEl = document.getElementById('music-artista');
+
+    let faixaAtual = 0;
+    let tocando = false;
+
+    function carregarFaixa(indice, autoPlay){
+      const musica = CONFIG.musicas[indice];
+      audio.src = musica.arquivo;
+      tituloEl.textContent = musica.titulo;
+      artistaEl.textContent = musica.artista;
+      if(autoPlay){
+        audio.play().then(()=>{
+          tocando = true;
+          icon.className = 'ph-fill ph-pause';
+        }).catch(()=>{});
+      }
+    }
+
+    // Quando uma música termina, avança para a próxima e recomeça o ciclo no final
+    audio.addEventListener('ended', ()=>{
+      faixaAtual = (faixaAtual + 1) % CONFIG.musicas.length;
+      carregarFaixa(faixaAtual, true);
+    });
+
+    carregarFaixa(faixaAtual, false);
+    player.classList.remove('hidden');
+
+    toggleBtn.addEventListener('click', ()=>{
+      if(tocando){
+        audio.pause();
+        icon.className = 'ph-fill ph-play';
+        tocando = false;
+      } else {
+        audio.play().then(()=>{
+          tocando = true;
+          icon.className = 'ph-fill ph-pause';
+        }).catch(()=>{});
+      }
+    });
+
+    // Tenta iniciar sozinho ao primeiro clique em qualquer lugar da página
+    // (navegadores bloqueiam autoplay com som sem interação do usuário)
+    document.body.addEventListener('click', function iniciarAuto(){
+      if(!tocando){
+        audio.play().then(()=>{
+          tocando = true;
+          icon.className = 'ph-fill ph-pause';
+        }).catch(()=>{});
+      }
+      document.body.removeEventListener('click', iniciarAuto);
+    }, { once:true });
+  }
+</script>
+
+</body>
+</html>
