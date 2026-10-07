@@ -36,7 +36,7 @@ Te amo.`,
     // Linha do tempo: adicione, remova ou edite quantos momentos quiser.
     momentos: [
       { data: "11 de agosto de 2023", titulo: "Como tudo começou", texto: "O dia em que nos conhecemos e tudo mudou." },
-      { data: "edite esta data", titulo: "Primeiro encontro", texto: "Na Casa Gourmet — aquele nervosismo bom, e a certeza de que valeria a pena." },
+      { data: "09 de dezembro de 2023", titulo: "Primeiro encontro", texto: "Na Casa Gourmet — aquele nervosismo bom, e a certeza de que valeria a pena." },
       { data: "08 de janeiro de 2024", titulo: "Ficou oficial", texto: "O dia em que decidimos escrever essa história juntos." },
       { data: "Hoje", titulo: "E continuamos...", texto: "Cada dia é um novo capítulo dessa história." },
     ],
@@ -257,13 +257,18 @@ Te amo.`,
   // ---- Contador de tempo juntos ----
   function atualizarContador(){
     const agora = new Date();
-    let diffMs = agora - CONFIG.dataInicio;
-    if(diffMs < 0) diffMs = 0;
-
-    const totalDias = Math.floor(diffMs / 86400000);
-    const anos = Math.floor(totalDias / 365);
-    const meses = Math.floor((totalDias % 365) / 30);
-    const dias = totalDias - (anos*365) - (meses*30);
+    const ini = CONFIG.dataInicio;
+    let anos = 0, meses = 0, dias = 0;
+    if(agora >= ini){
+      // Cálculo pelo calendário real (meses e anos de verdade)
+      let totalMeses = (agora.getFullYear() - ini.getFullYear()) * 12 + (agora.getMonth() - ini.getMonth());
+      if(agora.getDate() < ini.getDate()) totalMeses--;
+      anos = Math.floor(totalMeses / 12);
+      meses = totalMeses % 12;
+      const base = new Date(ini.getFullYear(), ini.getMonth() + totalMeses, ini.getDate());
+      const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+      dias = Math.round((hoje - base) / 86400000);
+    }
 
     const box = document.getElementById('counter-box');
     box.innerHTML = `
